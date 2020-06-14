@@ -3,28 +3,30 @@ FROM employees e
 JOIN departments d ON d.department_id = e.department_id
 JOIN locations l ON l.location_id = d.location_id
 JOIN countries c ON c.country_id = l.country_id
-WHERE ((sysdate - e.hire_date) > (SELECT MIN(sysdate - hire_date)
-                                  FROM employees
-                                  WHERE department_id = (   SELECT department_id
-                                                            FROM employees
-                                                            GROUP BY department_id
-                                                            HAVING COUNT(employee_id) = (
-                                                                                            SELECT MAX(COUNT(employee_id))
-                                                                                            FROM employees
-                                                                                            GROUP BY department_id
-                                                                                         )
-                                                         )  
-								  )
+WHERE ((sysdate - e.hire_date) > (
+				     SELECT MIN(sysdate - hire_date)
+                                     FROM employees
+                                     WHERE department_id = (   
+				  			       SELECT department_id
+                                                               FROM employees
+                                                               GROUP BY department_id
+                                                               HAVING COUNT(employee_id) = (
+                                                                                               SELECT MAX(COUNT(employee_id))
+                                                                                               FROM employees
+                                                                                               GROUP BY department_id
+                                                                                            )
+                                                            )  
+				 )
       )AND (e.department_id IN	(
                                     SELECT department_id
                                     FROM (
-                                            SELECT department_id,
-                                            row_number () over (order by liczebnosc DESC) kolejnosc
-                                            FROM (  
-                                                     SELECT department_id, COUNT(employee_id) as liczebnosc
-                                                     FROM employees
-                                                     GROUP BY department_id
-                                                 )
+                                             SELECT department_id,
+                                             row_number () over (order by liczebnosc DESC) kolejnosc
+                                             FROM (  
+                                                      SELECT department_id, COUNT(employee_id) as liczebnosc
+                                                      FROM employees
+                                                      GROUP BY department_id
+                                                  )
                                          )
                                     WHERE kolejnosc < 5
                                 )
