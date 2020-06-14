@@ -1,0 +1,6 @@
+Dla miast wyświetl najmniejszą pensję,
+wyświetl tę informację także w skali krajów.
+Pomiń przy tym departamenty,
+ które nie znajdują się wśród 4 najliczniejszych departamentów oraz osoby,
+które pracują krócej, niż pracownik,
+który pracuje najkrócej w największym departamencie.
